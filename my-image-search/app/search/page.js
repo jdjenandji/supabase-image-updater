@@ -1,3 +1,5 @@
+"use client";
+
 // app/search/page.js
 import { useState } from 'react';
 
