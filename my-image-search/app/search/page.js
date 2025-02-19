@@ -1,39 +1,44 @@
 "use client";
-
-// app/search/page.js
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
-  const [resultImageUrl, setResultImageUrl] = useState(null);
+  const [query, setQuery] = useState("");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
     const data = await res.json();
-    setResultImageUrl(data.imageUrl || null);
+    setResult(data);
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Simple Image Search</h1>
+    <div style={{ padding: "2rem" }}>
+      <h1>Image Mood Search</h1>
       <form onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Enter a search term..."
+          placeholder="Enter mood (e.g., happy, calm)"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          style={{ width: '300px', padding: '0.5rem' }}
+          style={{ width: "300px", padding: "0.5rem" }}
         />
-        <button type="submit" style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}>
+        <button type="submit" style={{ marginLeft: "1rem", padding: "0.5rem 1rem" }}>
           Search
         </button>
       </form>
-      {resultImageUrl && (
-        <div style={{ marginTop: '2rem' }}>
-          <img src={resultImageUrl} alt="Search result" style={{ maxWidth: '300px' }} />
+      {loading && <p>Loading...</p>}
+      {result && result.image_url && (
+        <div style={{ marginTop: "2rem" }}>
+          <img src={result.image_url} alt={result.mood} style={{ maxWidth: "300px" }} />
+          <p>Mood: {result.mood}</p>
+          <p>Distance: {result.distance.toFixed(2)}</p>
         </div>
       )}
+      {result && result.error && <p>Error: {result.error}</p>}
     </div>
   );
 }
