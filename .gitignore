@@ -1,0 +1,11 @@
+# Node modules
+node_modules/
+
+# Build output
+.next/
+
+# Environment files (sensitive)
+.env*
+
+# Log files
+*.log
